@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Stample</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body {
+  background-color:#000;
+  color:white;
+  font-family:'Zalando Sans Expanded', sans-serif;
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+
+.input-container {
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:16px;
+  padding:15px 25px;
+  backdrop-filter:blur(10px);
+  width:260px;
+}
+
+
+.input-container label {
+  display:block;
+  font-size:14px;
+  margin-bottom:6px;
+  color:#ccc;
+  font-weight:600;
+}
+
+
+.input-container input {
+  width:100%;
+  margin-bottom:12px;
+  padding:8px;
+  border-radius:8px;
+  border:none;
+  background:#1f1f1f;
+  color:white;
+  outline:none;
+  font-family:inherit;
+}
+
+
+.input-container input[type="color"] {
+  height:40px;
+  padding:2px;
+  cursor:pointer;
+  background:none;
+}
+
+
+button {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  background:white;
+  color:black;
+  font-family:inherit;
+  font-weight:600;
+  cursor:pointer;
+}
+
+
+button:hover {
+  background:#ddd;
+}
+
+
+.preview {
+
+  position:absolute;
+  top:50%;
+  right:250px;
+  transform:translateY(-50%);
+  text-align:center;
+
+}
+
+
+.top-text {
+
+  font-size:12px;
+  color:#999;
+  margin-bottom:10px;
+
+}
+
+
+.album-cover {
+
+  width:200px;
+  height:200px;
+  border-radius:16px;
+  object-fit:cover;
+  background:#222;
+  border:0.5px solid #ffffff53;
+  box-shadow:0 0 20px rgba(255,255,255,.15);
+
+}
+
+
+.song-name {
+
+  font-size:18px;
+  font-weight:600;
+  margin-top:14px;
+
+}
+
+
+.artist-name {
+
+  font-size:14px;
+  color:#ccc;
+  margin-top:8px;
+
+}
+
+
+.release-year {
+
+  font-size:12px;
+  color:#999;
+  margin-top:7px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="input-container">
+
+
+<label>Upload Album Cover:</label>
+<input type="file" id="imageUpload" accept="image/*">
+
+
+<label>Top Text:</label>
+<input type="text" id="topText" placeholder="Enter top text">
+
+
+<label>Song Name:</label>
+<input type="text" id="songName" placeholder="Enter song name">
+
+
+<label>Artist Name:</label>
+<input type="text" id="artistName" placeholder="Enter artist name">
+
+
+<label>Release Year:</label>
+<input type="text" id="releaseYear" placeholder="Enter release year">
+
+
+<label>Outer Glow Color:</label>
+<input type="color" id="glowColor" value="#ffffff">
+
+
+<button id="downloadBtn">
+Download Preview
+</button>
+
+
+<button id="downloadTextBtn">
+Download Top Text
+</button>
+
+
+</div>
+
+
+<div class="preview">
+
+
+<div id="topTextPreview" class="top-text">
+Top Text
+</div>
+
+
+<img id="albumPreview" class="album-cover">
+
+
+<div id="songPreview" class="song-name">
+Song Name
+</div>
+
+
+<div id="artistPreview" class="artist-name">
+by Artist Name
+</div>
+
+
+<div id="yearPreview" class="release-year">
+(2025)
+</div>
+
+
+</div>
+<script>
+
+
+const imageUpload = document.getElementById("imageUpload");
+
+const topTextInput = document.getElementById("topText");
+const songNameInput = document.getElementById("songName");
+const artistNameInput = document.getElementById("artistName");
+const releaseYearInput = document.getElementById("releaseYear");
+const glowColorInput = document.getElementById("glowColor");
+
+
+const albumPreview = document.getElementById("albumPreview");
+
+const topTextPreview = document.getElementById("topTextPreview");
+const songPreview = document.getElementById("songPreview");
+const artistPreview = document.getElementById("artistPreview");
+const yearPreview = document.getElementById("yearPreview");
+
+
+
+imageUpload.addEventListener("change", e => {
+
+    const file = e.target.files[0];
+
+    if(file){
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+
+            albumPreview.src = reader.result;
+
+        };
+
+        reader.readAsDataURL(file);
+
+    }
+
+});
+
+
+
+topTextInput.addEventListener("input",()=>{
+
+    topTextPreview.textContent =
+    topTextInput.value || "Top Text";
+
+});
+
+
+
+songNameInput.addEventListener("input",()=>{
+
+    songPreview.textContent =
+    songNameInput.value || "Song Name";
+
+});
+
+
+
+artistNameInput.addEventListener("input",()=>{
+
+    artistPreview.textContent =
+    artistNameInput.value
+    ? "by " + artistNameInput.value
+    : "by Artist Name";
+
+});
+
+
+
+releaseYearInput.addEventListener("input",()=>{
+
+    yearPreview.textContent =
+    releaseYearInput.value || "2025";
+
+});
+
+
+
+glowColorInput.addEventListener("input",()=>{
+
+    albumPreview.style.boxShadow =
+    `0 0 30px 3px ${glowColorInput.value}55`;
+
+});
+
+
+
+
+
+document.getElementById("downloadTextBtn").addEventListener("click", async ()=>{
+
+await document.fonts.ready;
+
+const canvas = document.createElement("canvas");
+
+canvas.width = 1600;
+canvas.height = 200;
+
+
+const ctx = canvas.getContext("2d");
+
+
+ctx.clearRect(0,0,1600,200);
+
+
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+
+ctx.fillStyle = "#999";
+
+
+let fontSize = 80;
+
+ctx.font =
+`400 ${fontSize}px 'Zalando Sans Expanded'`;
+
+
+// shrink text if it is too wide
+while(ctx.measureText(topTextPreview.textContent).width > 1400){
+
+    fontSize--;
+
+    ctx.font =
+    `400 ${fontSize}px 'Zalando Sans Expanded'`;
+
+}
+
+
+ctx.fillText(
+topTextPreview.textContent,
+800,
+100
+);
+
+
+
+const link = document.createElement("a");
+
+link.download="top-text-preview.png";
+
+link.href =
+canvas.toDataURL(
+"image/png",
+1
+);
+
+
+link.click();
+
+
+});
+
+
+document.getElementById("downloadBtn").addEventListener("click", async ()=>{
+
+
+await document.fonts.ready;
+
+
+
+const scale = 4;
+
+
+const canvas = document.createElement("canvas");
+
+
+canvas.width = 350 * scale;
+
+canvas.height = 360 * scale;
+
+
+
+const ctx = canvas.getContext("2d");
+
+
+
+ctx.scale(scale,scale);
+
+
+ctx.imageSmoothingEnabled=true;
+
+ctx.imageSmoothingQuality="high";
+
+
+
+ctx.clearRect(0,0,350,360);
+
+
+
+const img = new Image();
+
+
+img.src = albumPreview.src;
+
+
+
+img.onload = ()=>{
+
+
+// TOP TEXT
+
+ctx.textAlign="center";
+
+
+ctx.fillStyle="#999";
+
+
+ctx.font =
+"400 100px 'Zalando Sans Expanded'";
+
+
+
+
+
+
+
+
+// ALBUM COVER
+
+
+ctx.save();
+
+
+ctx.beginPath();
+
+
+ctx.roundRect(
+
+75,
+
+25,
+
+200,
+
+200,
+
+16
+
+);
+
+
+ctx.clip();
+
+
+
+ctx.drawImage(
+
+img,
+
+75,
+
+25,
+
+200,
+
+200
+
+);
+
+
+
+ctx.restore();
+
+
+
+
+// GLOW
+
+
+ctx.shadowColor =
+glowColorInput.value;
+
+
+ctx.shadowBlur=25;
+
+
+ctx.strokeStyle =
+glowColorInput.value;
+
+
+ctx.lineWidth=2;
+
+
+
+ctx.beginPath();
+
+
+ctx.roundRect(
+
+75,
+
+25,
+
+200,
+
+200,
+
+16
+
+);
+
+
+ctx.stroke();
+
+
+
+ctx.shadowBlur=0;
+
+
+
+// SONG NAME
+
+ctx.fillStyle="white";
+
+
+ctx.font =
+"600 18px 'Zalando Sans Expanded'";
+
+
+ctx.fillText(
+
+songPreview.textContent,
+
+175,
+
+255
+
+);
+
+
+
+
+// ARTIST
+
+ctx.fillStyle="#ccc";
+
+
+ctx.font =
+"500 14px 'Zalando Sans Expanded'";
+
+
+ctx.fillText(
+
+artistPreview.textContent,
+
+175,
+
+280
+
+);
+
+
+
+
+// RELEASE YEAR
+
+ctx.fillStyle="#999";
+
+
+ctx.font =
+"400 12px 'Zalando Sans Expanded'";
+
+
+ctx.fillText(
+
+"(" + yearPreview.textContent.replace(/[()]/g,"") + ")",
+
+175,
+
+305
+
+);
+
+
+
+
+// DOWNLOAD
+
+const link=document.createElement("a");
+
+
+link.download="songshowcase.png";
+
+
+link.href =
+canvas.toDataURL(
+
+"image/png",
+
+1
+
+);
+
+
+
+link.click();
+
+
+
+};
+
+
+
+});
+
+
+
+</script>
+
+
+</body>
+
+</html>
