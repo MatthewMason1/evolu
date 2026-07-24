@@ -105,15 +105,20 @@ button:hover {
 }
 
 
-.album-cover {
+.album-cover{
 
   width:200px;
   height:200px;
   border-radius:16px;
   object-fit:cover;
   background:#222;
-  border:0.6px solid #ffffff53;
-  box-shadow:0 0 20px rgba(255,255,255,.15);
+  border:0.6px solid rgba(255,255,255,.28);
+
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.55),
+    inset 0 10px 30px rgba(255,255,255,.12),
+    inset 0 -12px 24px rgba(0,0,0,.18),
+    0 0 20px rgba(255,255,255,.15);
 
 }
 
@@ -220,7 +225,6 @@ by Artist Name
 </div>
 <script>
 
-
 const imageUpload = document.getElementById("imageUpload");
 
 const topTextInput = document.getElementById("topText");
@@ -228,7 +232,6 @@ const songNameInput = document.getElementById("songName");
 const artistNameInput = document.getElementById("artistName");
 const releaseYearInput = document.getElementById("releaseYear");
 const glowColorInput = document.getElementById("glowColor");
-
 
 const albumPreview = document.getElementById("albumPreview");
 
@@ -269,14 +272,12 @@ topTextInput.addEventListener("input",()=>{
 });
 
 
-
 songNameInput.addEventListener("input",()=>{
 
     songPreview.textContent =
     songNameInput.value || "Song Name";
 
 });
-
 
 
 artistNameInput.addEventListener("input",()=>{
@@ -287,7 +288,6 @@ artistNameInput.addEventListener("input",()=>{
     : "by Artist Name";
 
 });
-
 
 
 releaseYearInput.addEventListener("input",()=>{
@@ -314,6 +314,7 @@ document.getElementById("downloadTextBtn").addEventListener("click", async ()=>{
 
 await document.fonts.ready;
 
+
 const canvas = document.createElement("canvas");
 
 canvas.width = 1600;
@@ -323,29 +324,26 @@ canvas.height = 200;
 const ctx = canvas.getContext("2d");
 
 
-ctx.clearRect(0,0,1600,200);
+ctx.textAlign="center";
+ctx.textBaseline="middle";
+
+ctx.fillStyle="#999";
 
 
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-
-
-ctx.fillStyle = "#999";
-
-
-let fontSize = 80;
+let fontSize=80;
 
 ctx.font =
 `400 ${fontSize}px 'Zalando Sans Expanded'`;
 
 
-// shrink text if it is too wide
-while(ctx.measureText(topTextPreview.textContent).width > 1400){
+while(
+ctx.measureText(topTextPreview.textContent).width > 1400
+){
 
-    fontSize--;
+fontSize--;
 
-    ctx.font =
-    `400 ${fontSize}px 'Zalando Sans Expanded'`;
+ctx.font =
+`400 ${fontSize}px 'Zalando Sans Expanded'`;
 
 }
 
@@ -358,21 +356,21 @@ topTextPreview.textContent,
 
 
 
-const link = document.createElement("a");
+const link=document.createElement("a");
 
 link.download="top-text-preview.png";
 
-link.href =
-canvas.toDataURL(
-"image/png",
-1
-);
-
+link.href=canvas.toDataURL("image/png",1);
 
 link.click();
 
 
 });
+
+
+
+
+
 
 
 document.getElementById("downloadBtn").addEventListener("click", async ()=>{
@@ -381,106 +379,76 @@ document.getElementById("downloadBtn").addEventListener("click", async ()=>{
 await document.fonts.ready;
 
 
-
 const scale = 4;
 
 
-const canvas = document.createElement("canvas");
+const width = 450;
+const height = 360;
 
 
-canvas.width = 350 * scale;
-
-canvas.height = 360 * scale;
+const canvas=document.createElement("canvas");
 
 
+canvas.width = width * scale;
+canvas.height = height * scale;
 
-const ctx = canvas.getContext("2d");
 
+const ctx=canvas.getContext("2d");
 
 
 ctx.scale(scale,scale);
 
 
 ctx.imageSmoothingEnabled=true;
-
 ctx.imageSmoothingQuality="high";
 
 
-
-ctx.clearRect(0,0,350,360);
-
-
-
-const img = new Image();
-
-
-img.src = albumPreview.src;
+ctx.clearRect(0,0,width,height);
 
 
 
-img.onload = ()=>{
+const img=new Image();
 
-
-// TOP TEXT
-
-ctx.textAlign="center";
-
-
-ctx.fillStyle="#999";
-
-
-ctx.font =
-"400 100px 'Zalando Sans Expanded'";
+img.src=albumPreview.src;
 
 
 
+img.onload=()=>{
+
+
+const x=125;
+const y=25;
+const size=200;
+const radius=16;
 
 
 
-
-
-// ALBUM COVER
-
+// ALBUM COVER CLIP
 
 ctx.save();
 
 
 ctx.beginPath();
 
-
 ctx.roundRect(
-
-75,
-
-25,
-
-200,
-
-200,
-
-16
-
+x,
+y,
+size,
+size,
+radius
 );
 
 
 ctx.clip();
 
 
-
 ctx.drawImage(
-
 img,
-
-75,
-
-25,
-
-200,
-
-200
-
+x,
+y,
+size,
+size
 );
-
 
 
 ctx.restore();
@@ -488,7 +456,120 @@ ctx.restore();
 
 
 
-// GLOW
+// APPLE INNER LIGHT
+
+ctx.save();
+
+
+ctx.beginPath();
+
+ctx.roundRect(
+x,
+y,
+size,
+size,
+radius
+);
+
+
+ctx.clip();
+
+
+
+let topGrad =
+ctx.createLinearGradient(
+0,
+y,
+0,
+y+70
+);
+
+
+topGrad.addColorStop(
+0,
+"rgba(255,255,255,.45)"
+);
+
+
+topGrad.addColorStop(
+1,
+"rgba(255,255,255,0)"
+);
+
+
+
+ctx.fillStyle=topGrad;
+
+ctx.fillRect(
+x,
+y,
+size,
+70
+);
+
+
+
+
+let bottomGrad =
+ctx.createLinearGradient(
+0,
+y+size-60,
+0,
+y+size
+);
+
+
+bottomGrad.addColorStop(
+0,
+"rgba(0,0,0,0)"
+);
+
+
+bottomGrad.addColorStop(
+1,
+"rgba(0,0,0,.25)"
+);
+
+
+
+ctx.fillStyle=bottomGrad;
+
+ctx.fillRect(
+x,
+y+size-60,
+size,
+60
+);
+
+
+
+// inner border
+
+ctx.strokeStyle="rgba(255,255,255,.35)";
+
+ctx.lineWidth=1;
+
+
+ctx.beginPath();
+
+ctx.roundRect(
+x+.5,
+y+.5,
+size-1,
+size-1,
+radius
+);
+
+
+ctx.stroke();
+
+
+ctx.restore();
+
+
+
+
+// OUTER GLOW
 
 
 ctx.shadowColor =
@@ -505,50 +586,41 @@ glowColorInput.value;
 ctx.lineWidth=2;
 
 
-
 ctx.beginPath();
 
-
 ctx.roundRect(
-
-75,
-
-25,
-
-200,
-
-200,
-
-16
-
+x,
+y,
+size,
+size,
+radius
 );
 
 
 ctx.stroke();
 
 
-
 ctx.shadowBlur=0;
+
+
 
 
 
 // SONG NAME
 
-ctx.fillStyle="white";
+ctx.textAlign="center";
 
+
+ctx.fillStyle="white";
 
 ctx.font =
 "600 18px 'Zalando Sans Expanded'";
 
 
 ctx.fillText(
-
 songPreview.textContent,
-
-175,
-
+225,
 255
-
 );
 
 
@@ -564,19 +636,15 @@ ctx.font =
 
 
 ctx.fillText(
-
 artistPreview.textContent,
-
-175,
-
+225,
 280
-
 );
 
 
 
 
-// RELEASE YEAR
+// YEAR
 
 ctx.fillStyle="#999";
 
@@ -586,14 +654,11 @@ ctx.font =
 
 
 ctx.fillText(
-
 "(" + yearPreview.textContent.replace(/[()]/g,"") + ")",
-
-175,
-
+225,
 305
-
 );
+
 
 
 
@@ -608,17 +673,12 @@ link.download="songshowcase.png";
 
 link.href =
 canvas.toDataURL(
-
 "image/png",
-
 1
-
 );
 
 
-
 link.click();
-
 
 
 };
@@ -626,8 +686,6 @@ link.click();
 
 
 });
-
-
 
 </script>
 
